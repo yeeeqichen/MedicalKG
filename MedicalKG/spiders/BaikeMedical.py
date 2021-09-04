@@ -7,7 +7,7 @@ from ..items import MedicalkgItem
 class BaikemedicalSpider(scrapy.Spider):
     name = 'BaikeMedical'
     allowed_domains = ['baike.baidu.com']
-    start_urls = ['https://baike.baidu.com/wikitag/taglist?tagId=75956']
+    start_urls = ['https://baike.baidu.com/wikitag/taglist?tagId=75953']
                   # 'https://baike.baidu.com/wikitag/taglist?tagId=75954',
                   # 'https://baike.baidu.com/wikitag/taglist?tagId=75955',
                   # 'https://baike.baidu.com/wikitag/taglist?tagId=75956']
