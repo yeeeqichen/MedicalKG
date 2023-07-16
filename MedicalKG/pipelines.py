@@ -12,7 +12,8 @@ import pymongo
 client = pymongo.MongoClient('localhost')
 db = client.MedicalKG
 collection = db.MedicalKG
-
+# print(db)
+# print(collection)
 
 class MedicalkgPipeline:
     def process_item(self, item, spider):

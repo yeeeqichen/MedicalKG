@@ -7,10 +7,10 @@ from ..items import MedicalkgItem
 class BaikemedicalSpider(scrapy.Spider):
     name = 'BaikeMedical'
     allowed_domains = ['baike.baidu.com']
-    start_urls = ['https://baike.baidu.com/wikitag/taglist?tagId=75953']
-                  # 'https://baike.baidu.com/wikitag/taglist?tagId=75954',
-                  # 'https://baike.baidu.com/wikitag/taglist?tagId=75955',
-                  # 'https://baike.baidu.com/wikitag/taglist?tagId=75956']
+    start_urls = ['https://baike.baidu.com/wikitag/taglist?tagId=75953'
+                  'https://baike.baidu.com/wikitag/taglist?tagId=75954',
+                  'https://baike.baidu.com/wikitag/taglist?tagId=75955',
+                  'https://baike.baidu.com/wikitag/taglist?tagId=75956']
     triple_cnt = 0
 
     def start_requests(self):
@@ -26,12 +26,12 @@ class BaikemedicalSpider(scrapy.Spider):
                 while(cur_height < scrollHeight)
                 do
                     splash:evaljs("window.scrollTo(0, document.body.scrollHeight)")
-                    splash:wait(0.2)
+                    splash:wait(0.5)
                     prev_height = cur_height
                     cur_height = splash:evaljs("document.body.scrollTop")
-                    splash:wait(0.1)
+                    splash:wait(0.2)
                     scrollHeight = splash:evaljs("document.body.scrollHeight")
-                    splash:wait(0.1)
+                    splash:wait(0.2)
                     print(cur_height, scrollHeight)
                     if prev_height == cur_height then
                         lag_cnt = lag_cnt + 1
@@ -45,6 +45,20 @@ class BaikemedicalSpider(scrapy.Spider):
                 }
             end
         """
+        # scripts = """
+        #     function main(splash, args)
+        #       assert(splash:go(args.url))
+        #       assert(splash:wait(0.5))
+        #       for i=50,1,-1
+        #       do
+        #         splash:evaljs("window.scrollTo(0, document.body.scrollHeight)")
+        #         splash:wait(1)
+        #       end
+        #       return {
+        #         html = splash:html(),
+        #       }
+        #     end
+        # """
         for url in self.start_urls:
             yield SplashRequest(url=url,
                                 callback=self.parse,
@@ -55,7 +69,9 @@ class BaikemedicalSpider(scrapy.Spider):
                                 })
 
     def parse_second_page(self, response):
-        page_target = response.xpath('//dl[@class="lemmaWgt-lemmaTitle lemmaWgt-lemmaTitle-"]/dd/h1/text()').extract_first()
+        page_target = response.xpath(
+            '//input[@id="query"]/@data-value').extract_first()
+        # page_target = response.xpath('//dl[@class="lemmaWgt-lemmaTitle lemmaWgt-lemmaTitle-"]/dd/h1/text()').extract_first()
         blocks = response.xpath('//div[@class="basic-info J-basic-info cmn-clearfix"]/dl')
         for block in blocks:
             names = block.xpath('./dt/text()').extract()
